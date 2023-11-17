@@ -1,5 +1,10 @@
-import random
+"""
+Maintainer: Mateus Oliveira (mateus.oliveira@icomp.ufam.edu.br)
+        Gabriel Dias (g172441@dac.unicamp.br)
+        Marcio Almeida (m240781@dac.unicamp.br)
+"""
 
+import random
 import torch
 import yaml
 from tqdm import tqdm

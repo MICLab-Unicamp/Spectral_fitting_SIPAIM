@@ -1,12 +1,14 @@
-#sample_predicted
+#Maintainer: Mateus Oliveira (mateus.oliveira@icomp.ufam.edu.br)
+#        Gabriel Dias (g172441@dac.unicamp.br)
+#        Marcio Almeida (m240781@dac.unicamp.br)
+#
+
 for_predict: "split_train_txt/valid.txt"
-# Funcionou:
-# wide_resnet50_2
-# cspdarknet53
+
 
 network: "vit_base_patch16_224"
 learning_rate: 0.0001
-epochs: 100000000000000000000000000000000000000000000000000000000000000000000
+epochs: 10000
 
 reload_model:
   type: False
@@ -15,7 +17,6 @@ reload_model:
 optimizer:
   Adam:
     lr: 0.0001
-    #weight_decay: 0.01
 
 model:
   TimmSimpleCNNgelu:
@@ -32,15 +33,10 @@ loss:
 
 path_to_save_model: "models_h5"
 
-#--- path save model
 path_save_model: 'models_h5/'
 name_model: "vit_base_patch16_224"
 
-#evaluate step mafalda biggest dataset
 evaluate_step: 20000
-
-#----- wandb
-wandb: False
 
 train:
   batch_size: 180
@@ -53,13 +49,11 @@ test:
 
 train_dataset:
   DatasetBasisSetOpenTransformer3ChNormalize:
-    path_data: "/home/mateus/sipaim_code_math/Marcio_IC/tests/dataset_1000/train"
+    path_data: "dataset_1000/train"
     norm: "z_norm"
-    #norm: "min-max"
 
 valid_dataset:
   DatasetBasisSetOpenTransformer3ChNormalize:
-    path_data: "/home/mateus/sipaim_code_math/Marcio_IC/tests/dataset_1000/valid"
+    path_data: "dataset_1000/valid"
     norm: "z_norm"
-    #norm: "min-max"
 
