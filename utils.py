@@ -1,7 +1,6 @@
 import random
 
 import torch
-from K_fold import KFold
 import yaml
 from tqdm import tqdm
 import numpy as np

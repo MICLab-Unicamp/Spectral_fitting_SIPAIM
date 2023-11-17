@@ -217,8 +217,15 @@ if __name__ == "__main__":
     run = None
 
     run_training_experiment(
-        model, train_loader, validation_loader, optimizer, None,
-        criterion, scheduler, configs, run
+        model=model,
+        train_loader=train_loader,
+        validation_loader=validation_loader,
+        optimizer=optimizer,
+        criterion=criterion,
+        scheduler=None,
+        configs=configs,
+        run=run
     )
-
+    # model, train_loader, validation_loader, optimizer,
+    # criterion, scheduler, configs, run
     torch.cuda.empty_cache()

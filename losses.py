@@ -2,7 +2,6 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from soft_dtw_cuda import SoftDTW
 import torch.nn.functional as F
 
 class RangeMAELoss(nn.Module):
