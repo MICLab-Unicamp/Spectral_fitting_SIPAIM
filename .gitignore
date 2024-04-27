@@ -3,3 +3,4 @@ __pycache__/
 /data/
 /valid_on_the_fly/
 /models_h5/
+/evaluate_results/
