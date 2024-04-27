@@ -1,12 +1,12 @@
 """
-Maintainer: Mateus Oliveira (mateus.oliveira@icomp.ufam.edu.br)
+Maintainer: Mateus Oliveira (m203656@dac.unicamp.br)
         Gabriel Dias (g172441@dac.unicamp.br)
         Marcio Almeida (m240781@dac.unicamp.br)
 """
 
-from losses import RangeMAELoss
+from losses import MAELoss
 from utils import set_device
-from models import TimmSimpleCNNgelu
+from models import TimmModelSpectrogram
 from save_models import SaveBestModel
 from datasets import DatasetBasisSetOpenTransformer3ChNormalize
 import torch
@@ -18,7 +18,7 @@ DEVICE = set_device()
 
 FACTORY_DICT = {
     "model": {
-        "TimmSimpleCNNgelu": TimmSimpleCNNgelu
+        "TimmModelSpectrogram": TimmModelSpectrogram
 
     },
     "dataset": {
@@ -28,7 +28,7 @@ FACTORY_DICT = {
         "Adam": torch.optim.Adam
     },
     "loss": {
-        "RangeMAELoss": RangeMAELoss(),
+        "MAELoss": MAELoss,
 
     },
 }

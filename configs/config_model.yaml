@@ -1,0 +1,63 @@
+wandb:
+  activate: False
+  project: ""
+  entity: ""
+
+current_model:
+  save_model: True
+  model_dir: "models_h5"
+  model_name: "TimmModelSpectrogramCurrent"
+
+reload_from_existing_model:
+  activate: False
+  model_dir: "models_h5"
+  model_name: "TimmModelSpectrogramCurrentReload"
+
+epochs: 100
+
+optimizer:
+  Adam:
+    lr: 0.0001
+
+loss: MAELoss
+
+lr_scheduler:
+  activate: False
+  scheduler_type: "cosineannealinglr"
+  info:
+    T_max: 10
+    eta_min: 0.000001
+
+model:
+  TimmModelSpectrogram:
+    timm_network: "vit_base_patch16_224"
+    dropout: 0.2
+
+train:
+  batch_size: 35
+  num_workers: 4
+
+valid:
+  batch_size: 200
+  num_workers: 4
+
+basis_set_path: data/basisset
+
+train_dataset:
+  DatasetBasisSetOpenTransformer3ChNormalize:
+    path_data: "data/train"
+    norm: "z_norm"
+
+valid_dataset:
+  DatasetBasisSetOpenTransformer3ChNormalize:
+    path_data: "data/valid"
+    norm: "z_norm"
+
+valid_on_the_fly:
+  activate: True
+  save_dir_path: "valid_on_the_fly"
+
+test_dataset:
+  DatasetBasisSetOpenTransformer3ChNormalize:
+    path_data: "data/test"
+    norm: "z_norm"

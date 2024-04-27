@@ -1,5 +1,5 @@
 """
-Maintainer: Mateus Oliveira (mateus.oliveira@icomp.ufam.edu.br)
+Maintainer: Mateus Oliveira (m203656@dac.unicamp.br)
         Gabriel Dias (g172441@dac.unicamp.br)
         Marcio Almeida (m240781@dac.unicamp.br)
 """
@@ -7,9 +7,7 @@ Maintainer: Mateus Oliveira (mateus.oliveira@icomp.ufam.edu.br)
 import torch.nn as nn
 import timm
 import torch
-import torch.nn.functional as F
 from utils import set_device
-from einops import rearrange
 
 DEVICE = set_device()
 
@@ -20,78 +18,63 @@ def get_n_out_features(encoder, img_size, nchannels):
     for dim in out_feature[-1].shape:
         n_out *= dim
     return n_out
-class TimmSimpleCNNgelu(nn.Module):
-    def __init__(self, network: str,
-                 image_size: int,
-                 nchannels: int,
-                 transformers: bool = False,
-                 pretrained: bool = False,
+
+
+class TimmModelSpectrogram(nn.Module):
+    def __init__(self, dropout: int,
+                 timm_network: str = "vit_base_patch16_224",
+                 image_size: tuple[int, int] = (224, 224),
+                 nchannels: int = 3,
+                 pretrained: bool = True,
                  num_classes: int = 0,
-                 features_only: bool = True):
+                 transformers: bool = True,
+                 features_only: bool = True,
+                 kernel_size: int = 2,
+                 stride: int = 2,
+                 ):
 
         super().__init__()
         if transformers:
-            model_creator = {'model_name': network,
+            model_creator = {'model_name': timm_network,
                              "pretrained": pretrained,
                              "num_classes": num_classes}
         else:
-            model_creator = {'model_name': network,
+            model_creator = {'model_name': timm_network,
                              "pretrained": pretrained,
                              "features_only": features_only}
 
         self.encoder = timm.create_model(**model_creator)
-
-        self.dimensionality_reductor = None
+        self.transformers = transformers
 
         for param in self.encoder.parameters():
             param.requires_grad = True
 
         n_out = get_n_out_features(self.encoder, image_size, nchannels)
 
-        if transformers:
-            self.dimensionality_up_sampling = nn.Sequential(
-                nn.Linear(n_out, 512), nn.GELU(),
-                nn.Dropout(p=0.2),
-                nn.Linear(512, 256), nn.GELU(),
-                nn.Linear(256, 128), nn.GELU(),
-                nn.Linear(128, 24)
-                #nn.Linear(512, 1024), nn.ReLU(inplace=True),
-                #nn.Linear(1024, 2048)
-            )
-
-            self.linear_1 = nn.Linear(n_out, 512)
-            self.gelu = nn.GELU()
-            self.linear_2 = nn.Linear(512, 256)
-            self.linear_3 = nn.Linear(n_out, 128)
-            self.linear_4 = nn.Linear(128, 24)
-            self.relu = nn.ReLU()
-
-        else:
-            self.dimensionality_up_sampling = nn.Sequential(
-                nn.Flatten(),
-                nn.Linear(n_out, 512), nn.GELU(),
-                nn.Linear(512, 256), nn.GELU(),
-                nn.Linear(256, 128), nn.GELU(),
-                nn.Linear(128, 24)
-            )
+        self.relu = nn.ReLU()
+        self.avg_pool = nn.AvgPool1d(kernel_size= kernel_size, stride= stride, count_include_pad=False)
+        self.dropout = nn.Dropout(p=dropout)
+        self.linear_1 = nn.Linear(n_out, 512)
+        self.linear_2 = nn.Linear(512, 256)
+        self.linear_3 = nn.Linear(256, 128)
+        self.linear_4 = nn.Linear(128, 24)
 
     def forward(self, signal_input):
-        #descomentar essa linha para rodar cnn
-        #output = self.encoder(signal_input)[-1]
-        #descomentar essa linha para rodar vit
-        x = self.encoder(signal_input)
+        out_encoder = self.encoder(signal_input) if self.transformers else self.encoder(signal_input)[-1]
 
-        out1 = self.linear_1(x)
-        out1_gelu = self.gelu(out1)
+        out1 = self.relu(self.linear_1(out_encoder))
+        out1 = self.dropout(out1)
 
-        out2 = self.linear_2(out1_gelu)
-        out1_downsampled = F.avg_pool1d(out1_gelu, kernel_size=2, stride=2)
-        out2_residue = out2 + out1_downsampled
+        out_pooled = self.avg_pool(out1.unsqueeze(1)).squeeze(1)
 
-        out3 = self.linear_3(x)
+        out2 = self.relu(self.linear_2(out1))
+        out2 = self.dropout(out2)
+
+        out2 = out2 + out_pooled
+
+        out3 = self.relu(self.linear_3(out2))
+        out3 = self.dropout(out3)
 
         out4 = self.linear_4(out3)
 
-        out4_residue = out4
-
-        return out4_residue
+        return out4
