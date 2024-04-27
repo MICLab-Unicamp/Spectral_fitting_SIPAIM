@@ -13,6 +13,11 @@ reload_from_existing_model:
   model_dir: "models_h5"
   model_name: "TimmModelSpectrogramCurrentReload"
 
+model:
+  TimmModelSpectrogram:
+    timm_network: "vit_base_patch16_224"
+    dropout: 0.2
+
 epochs: 100
 
 optimizer:
@@ -27,11 +32,6 @@ lr_scheduler:
   info:
     T_max: 10
     eta_min: 0.000001
-
-model:
-  TimmModelSpectrogram:
-    timm_network: "vit_base_patch16_224"
-    dropout: 0.2
 
 train:
   batch_size: 35

@@ -1,7 +1,7 @@
 """
-Maintainer: Mateus Oliveira (m203656@dac.unicamp.br)
-        Gabriel Dias (g172441@dac.unicamp.br)
-        Marcio Almeida (m240781@dac.unicamp.br)
+Maintainer: Gabriel Dias (g172441@dac.unicamp.br)
+            Mateus Oliveira (m203656@dac.unicamp.br)
+            Marcio Almeida (m240781@dac.unicamp.br)
 """
 
 import time
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "config_file", type=str, help="config neural network yaml",
+        "config_file", type=str, help="",
     )
     parser.add_argument(
         "weight", type=str, help="WEIGHTs neural network"
