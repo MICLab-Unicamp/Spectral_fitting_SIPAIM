@@ -12,7 +12,7 @@ import numpy as np
 from sklearn.metrics import r2_score
 from tqdm import tqdm
 from statistics import mean
-from utils import read_yaml, calculate_fqn
+from utils import read_yaml, calculate_fqn, clean_directory
 from plot_metrics import PlotMetrics
 from basis_and_generator import signal_reconstruction
 from constants import *
@@ -59,6 +59,13 @@ if __name__ == "__main__":
 
     save_dir_path = "evaluate_results"
     model_configs = configs["model"]
+
+    os.makedirs(save_dir_path, exist_ok=True)
+    clean_directory(save_dir_path)
+    os.makedirs(os.path.join(save_dir_path, "input_ground"), exist_ok=True)
+    os.makedirs(os.path.join(save_dir_path, "pred_ground"), exist_ok=True)
+    os.makedirs(os.path.join(save_dir_path, "fit_eval"), exist_ok=True)
+    os.makedirs(os.path.join(save_dir_path, "metrics"), exist_ok=True)
 
     if type(model_configs) == dict:
         model = FACTORY_DICT["model"][list(model_configs.keys())[0]](
@@ -158,11 +165,6 @@ if __name__ == "__main__":
             dict_metrics["coefs_mae"] = dict_metrics["coefs_mae"][1:, :]
             dict_metrics["coefs_mape"] = dict_metrics["coefs_mape"][1:, :]
 
-        os.makedirs(save_dir_path, exist_ok=True)
-        os.makedirs(os.path.join(save_dir_path, "input_ground"), exist_ok=True)
-        os.makedirs(os.path.join(save_dir_path, "pred_ground"), exist_ok=True)
-        os.makedirs(os.path.join(save_dir_path, "fit_eval"), exist_ok=True)
-        os.makedirs(os.path.join(save_dir_path, "metrics"), exist_ok=True)
 
         PlotMetrics.spectrum_comparison(input_spec, ground, ppm_axis,
                                         label_1="input_spec",

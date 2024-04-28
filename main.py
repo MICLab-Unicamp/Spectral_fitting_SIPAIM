@@ -13,7 +13,7 @@ import wandb
 from tqdm import trange
 from constants import *
 from lr_scheduler import CustomLRScheduler
-from utils import read_yaml
+from utils import read_yaml, clean_directory
 from metrics import calculate_metrics
 from plot_metrics import PlotMetrics
 from basis_and_generator import transform_frequency, signal_reconstruction
@@ -323,6 +323,11 @@ if __name__ == "__main__":
         load_dict = torch.load(name_model)
 
         model.load_state_dict(load_dict['model_state_dict'])
+
+    if configs["valid_on_the_fly"]["activate"]:
+        valid_save_dir_path = configs["valid_on_the_fly"]["save_dir_path"]
+        os.makedirs(valid_save_dir_path, exist_ok=True)
+        clean_directory(valid_save_dir_path)
 
     if configs['wandb']["activate"]:
         wandb.init(project=configs['wandb']["project"],

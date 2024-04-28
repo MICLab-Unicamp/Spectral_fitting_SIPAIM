@@ -43,8 +43,8 @@ The model's training and evaluation behaviors are fully configurable through a Y
 
 ### Model Configuration
 - **Model**
-  - `Model Class Name`: Specifies the model class. Example: `TimmModelSpectrogram`
-    - `Instantiation parameters of the model class`
+  - `Model Class Name`: Specifies the model class. Example: `TimmModelSpectrogram`.
+    - `Instantiation parameters of the model class`.
 
 ### Training Parameters
 
