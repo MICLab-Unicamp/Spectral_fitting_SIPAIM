@@ -65,12 +65,12 @@ The model's training and evaluation behaviors are fully configurable through a Y
 The following configuration parameters are designed to instantiate the Dataset class:
 
 - **Training Dataset**
-  - `Dataset Class Name`: Specifies the class used for managing the training dataset. Example: `DatasetThreeChannelSpectrogram`
+  - `Dataset Class Name`: Specifies the class used for managing the training dataset. Example: `DatasetBasisSetOpenTransformer3ChNormalize`
     - `path_data`: Directory containing the training data.
     - `norm`: Normalization to be applied to the spectrogram channels.
 
 - **Validation Dataset**
-  - `Dataset Class Name`: Specifies the class used for managing the validation dataset. Example: `DatasetThreeChannelSpectrogram`
+  - `Dataset Class Name`: Specifies the class used for managing the validation dataset. Example: `DatasetBasisSetOpenTransformer3ChNormalize`
     - `path_data`: Directory containing the validation data.
     - `norm`: Normalization to be applied to the spectrogram channels.
 
@@ -79,13 +79,13 @@ The following configuration parameters are designed to instantiate the Dataset c
   - `save_dir_path`: Directory to save these plots.
 
 - **Test Dataset**
-  - `Dataset Class Name`: Specifies the class used for managing the test dataset. Example: `DatasetThreeChannelSpectrogram`
+  - `Dataset Class Name`: Specifies the class used for managing the test dataset. Example: `DatasetBasisSetOpenTransformer3ChNormalize`
     - `path_data`: Directory containing the validation data.
     - `norm`: Normalization to be applied to the spectrogram channels.
 
 ## Model Evaluation
 
-The `evaluate.py` script evaluates the performance of the trained MRS fitting model. It parses command-line arguments, reads test dataset settings from a YAML file, and loads model weights. The script then processes the test dataset, generating predictions for MRS data and calculating fitting metrics such as MSE, MAE, MAPE, R2, and FQN for each sample. It compares the predicted spectrum (generated with the predicted fitting parameters and basis set) to the actual spectrum, calculates residuals, and visualizes the results in plots. Additionally, the script computes average fitting metrics across all samples and outputs these along with coefficients' metrics to CSV files for further analysis.
+The `evaluate.py` script evaluates the performance of the trained MRS fitting model. It parses command-line arguments, reads test dataset settings from the YAML file, and loads model weights. The script then processes the test dataset, generating predictions for MRS data and calculating fitting metrics such as MSE, MAE, MAPE, R2, and FQN for each sample. It compares the predicted spectrum (generated with the predicted fitting parameters and basis set) to the actual spectrum, calculates residuals, and visualizes the results in plots. Additionally, the script computes average fitting metrics across all samples and outputs these along with coefficients' metrics to CSV files for further analysis.
 
 ![Fitting Evaluation](https://github.com/MICLab-Unicamp/Spectral_fitting_SIPAIM/assets/91618118/0633399a-5a45-416d-a7b5-76afd49ec8c5)
 
