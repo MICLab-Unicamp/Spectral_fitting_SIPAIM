@@ -1,5 +1,7 @@
 ## Project Overview
 
+[![MICLab](https://img.shields.io/badge/MICLab-Spectral%20Fitting%20SIPAIM-blue)](https://github.com/MICLab-Unicamp/Spectral_fitting_SIPAIM)
+
 Magnetic Resonance Spectroscopy (MRS) is an efficient non-invasive solution for exploration of the biochemical composition of brain tissue, with potential for verification and follow-up of a variety of diseases visible or not through neuroimaging. This repository contains the code for the paper [Magnetic Resonance Spectroscopy Fitting through Spectrogram and Vision Transformers presented at the 2023 19th International Symposium on Medical Information Processing and Analysis (SIPAIM)](https://ieeexplore.ieee.org/abstract/document/10373415?casa_token=e2zW2Gf-J6cAAAAA:2OXdSVBDcxuJ1Tqk0DJy4DPev5gS-V5fleX9p-BbQ8nxcxQEPl49B8A1TTeeQcgX3h1vxrItszc). This innovative approach combines spectrogram representations of MRS data with the Vision Transformer (ViT) model to perform linear combination fitting for metabolite quantification in MRS. Leveraging the image recognition capabilities of the ViT model and the dual use of time and frequency domains, this method promises to enhance the adoption of MRS techniques in clinical settings, demonstrating promising results in the reconstruction of undersampled MRS acquisitions. The model receives a spectrogram as input, consisting of three channels: real, imaginary, and magnitude. It outputs amplitudes for 20 metabolites and one macromolecule, as well as values for damping, frequency, and phase shifts.
 
 ![Residual Model Output](https://github.com/MICLab-Unicamp/Spectral_fitting_SIPAIM/assets/91618118/348e2b63-d9b4-42d0-856b-564b822b9c81)
@@ -8,7 +10,8 @@ Magnetic Resonance Spectroscopy (MRS) is an efficient non-invasive solution for 
 
 ## Credits
 
-This project has adapted the robust and flexible [Spectro-ViT training framework](https://github.com/MICLab-Unicamp/Spectro-ViT), which has been instrumental in the development of this research and repository.
+This project has adapted the robust and flexible Spectro-ViT training framework [![GitHub](https://img.shields.io/badge/MICLab-Spectro_ViT-red)](https://github.com/MICLab-Unicamp/Spectro-ViT)
+, which has been instrumental in the development of this research and repository.
 
 #### Features of the Spectro-ViT Training Framework:
 - **Training Pipeline**: Provides a complete training pipeline and a YAML configuration file.
@@ -125,7 +128,7 @@ python main.py configs/config_model.yaml
 Here's an example of how you might evaluate the trained model:
 
 ```bash
-python evaluate.py configs/config_model.yaml models_h5/TimmModelSpectrogram.pt data/basisset
+python evaluate.py configs/config_model.yaml models_h5/TimmModelSpectrogram.pt
 ```
 
 ## Citation

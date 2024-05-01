@@ -29,10 +29,6 @@ if __name__ == "__main__":
         "weight", type=str, help="WEIGHTs neural network"
     )
 
-    parser.add_argument(
-        "basis_set_path", type=str, help="basis set path"
-    )
-
     dict_metrics = {"mse": [],
                     "mae": [],
                     "mape": [],
@@ -53,8 +49,8 @@ if __name__ == "__main__":
     processing_time = []
 
     args = parser.parse_args()
-    basis_set_path = args.basis_set_path
     configs = read_yaml(args.config_file)
+    basis_set_path = configs["basis_set_path"]
     load_dict = torch.load(args.weight)
 
     save_dir_path = "evaluate_results"
@@ -75,6 +71,8 @@ if __name__ == "__main__":
         model = FACTORY_DICT["model"][model_configs]()
 
     model.load_state_dict(load_dict["model_state_dict"])
+    model.to(DEVICE)
+    model.eval()
 
     test_dataset_configs = configs["test_dataset"]
     test_dataset = FACTORY_DICT["dataset"][list(test_dataset_configs)[0]](
@@ -90,6 +88,8 @@ if __name__ == "__main__":
 
         filename = test_dataset.input_path[i].split(".")[0]
 
+        spectrogram_3ch = spectrogram_3ch.to(DEVICE)
+
         t1 = time.time()
 
         pred_labels = model(spectrogram_3ch)
@@ -97,15 +97,13 @@ if __name__ == "__main__":
         t2 = time.time()
         processing_time.append(t2 - t1)
 
-        spectrogram_3ch = spectrogram_3ch.detach().cpu()
-
         pred_labels = pred_labels.detach().cpu().numpy().squeeze()
         pred_labels_amplitude = pred_labels[:21].copy()
         pred_labels_amplitude_norm = (pred_labels_amplitude - pred_labels_amplitude.min()) / (
                 pred_labels_amplitude.max() - pred_labels_amplitude.min())
         pred_labels_norm = np.append(pred_labels_amplitude_norm, pred_labels[21:])
 
-        spectrum_truth = spectrum_truth.detach().cpu().numpy().squeeze()
+        spectrum_truth = spectrum_truth.numpy().squeeze()
         spectrum_truth_amplitude = spectrum_truth[:21].copy()
         spectrum_truth_amplitude_norm = (spectrum_truth_amplitude - spectrum_truth_amplitude.min()) / (
                 spectrum_truth_amplitude.max() - spectrum_truth_amplitude.min())
@@ -125,22 +123,11 @@ if __name__ == "__main__":
         fqn = calculate_fqn(input_spec, fit_residual, ppm_axis)
         r2 = r2_score(np.real(ground), np.real(pred))
 
-        c_mse = []
-        c_mae = []
-        c_mape = []
+        c_mse = np.square(pred_labels_norm - spectrum_truth_norm)
 
-        for j in range(0, len(pred_labels_norm)):
-            coef_mse = (pred_labels_norm[j] - spectrum_truth_norm[j]) ** 2
-            coef_mae = abs(pred_labels_norm[j] - spectrum_truth_norm[j])
-            coef_mape = abs((pred_labels[j] - spectrum_truth[j]) / (spectrum_truth[j] + epsilon))
+        c_mae = np.abs(pred_labels_norm - spectrum_truth_norm)
 
-            c_mse.append(coef_mse)
-            c_mae.append(coef_mae)
-            c_mape.append(coef_mape)
-
-        c_mse = np.array(c_mse)
-        c_mae = np.array(c_mae)
-        c_mape = np.array(c_mape)
+        c_mape = np.abs((pred_labels - spectrum_truth) / (spectrum_truth + epsilon))
 
         print(f" \n {filename} results:")
         dict_metrics["mse"].append(mse)
@@ -164,7 +151,6 @@ if __name__ == "__main__":
             dict_metrics["coefs_mse"] = dict_metrics["coefs_mse"][1:, :]
             dict_metrics["coefs_mae"] = dict_metrics["coefs_mae"][1:, :]
             dict_metrics["coefs_mape"] = dict_metrics["coefs_mape"][1:, :]
-
 
         PlotMetrics.spectrum_comparison(input_spec, ground, ppm_axis,
                                         label_1="input_spec",

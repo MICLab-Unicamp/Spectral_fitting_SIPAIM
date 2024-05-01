@@ -39,12 +39,12 @@ def valid_on_the_fly(model, epoch, configs, basis_set_path, save_dir_path):
     input_spec = ReadDataSpectrum.load_txt_spectrum([fid_txt for fid_txt in list_val_data if ".txt" in fid_txt][random_index])
 
     spectrogram_3ch, labels = val_dataset[random_index]
-    spectrogram_3ch = torch.unsqueeze(spectrogram_3ch, dim=0).to("cuda")
+    spectrogram_3ch = torch.unsqueeze(spectrogram_3ch, dim=0).to(DEVICE)
 
     prediction = model(spectrogram_3ch)
 
     prediction = prediction.detach().cpu().numpy().squeeze()
-    labels = labels.detach().cpu().numpy()
+    labels = labels.numpy()
 
     pred_fid = signal_reconstruction(basis_set_path, list(prediction))
     truth_fid = signal_reconstruction(basis_set_path, list(labels))

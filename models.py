@@ -7,9 +7,6 @@ Maintainer: Gabriel Dias (g172441@dac.unicamp.br)
 import torch.nn as nn
 import timm
 import torch
-from utils import set_device
-
-DEVICE = set_device()
 
 
 def get_n_out_features(encoder, img_size, nchannels):
